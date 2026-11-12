@@ -142,6 +142,13 @@ export default function Home() {
   );
 }
 
+/** Why a lead got no first line: its deal-breakers, or too few signs of a fit in what Scout could check. */
+function weakWhy(l: LeadRow): string {
+  const minus = (l.reasons || []).filter((r) => r.points < 0).map((r) => r.why);
+  if (minus.length) return minus.slice(0, 2).join("; ");
+  return l.facts ? `Too few signs of a fit in ${l.facts} checked facts` : "Couldn't find facts to check";
+}
+
 function Row({ l, selected, onOpen }: { l: LeadRow; selected: boolean; onOpen: () => void }) {
   const t = tone(l.score);
   const busy = l.status === "queued" || l.status === "running";
@@ -152,7 +159,7 @@ function Row({ l, selected, onOpen }: { l: LeadRow; selected: boolean; onOpen: (
         <span className="who">{l.name}</span>
         <span className="where">{[l.city, l.website && host(l.website.startsWith("http") ? l.website : `https://${l.website}`)].filter(Boolean).join(" · ")}</span>
         {l.status === "done" && (l.opener ? <span className="snippet">&ldquo;{l.opener}&rdquo;</span>
-          : <span className="snippet muted">{l.reasons?.filter((r) => r.points < 0).map((r) => r.why).slice(0, 2).join("; ") || "Not enough information"}</span>)}
+          : <span className="snippet muted">{weakWhy(l)}</span>)}
         {l.status === "running" && <span className="snippet stage">{l.stage}…</span>}
         {l.status === "queued" && <span className="snippet muted">Waiting its turn</span>}
         {l.status === "failed" && <span className="snippet error-text">Couldn&apos;t finish: {l.error}</span>}
