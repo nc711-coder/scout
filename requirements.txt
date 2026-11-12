@@ -1,0 +1,6 @@
+openai>=1.40                      # Groq's API is OpenAI-compatible
+httpx>=0.27                       # Tavily's web search and page reading
+pytest>=8
+psycopg[binary]>=3.2
+fastapi>=0.110
+uvicorn>=0.29
